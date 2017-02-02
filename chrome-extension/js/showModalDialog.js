@@ -18,7 +18,9 @@
 	const originalClose = window.close;
 	window.close = () => {
 		if (typeof window.returnValue !== "undefined") {
-			window.opener[returnValueContainerKey][returnValueKey] = returnValue;
+			if (window.opener && window.opener[returnValueContainerKey]) {
+				window.opener[returnValueContainerKey][returnValueKey] = returnValue;
+			}
 		}
 		originalClose();
 	};
