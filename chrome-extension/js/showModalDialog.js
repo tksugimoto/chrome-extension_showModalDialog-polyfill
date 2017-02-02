@@ -14,15 +14,13 @@
 	const returnValueContainerKey = "___returnValueConnector_%extension_id%";
 
 	// ポップアップ
-	const originalClose = window.close;
-	window.close = () => {
+	window.addEventListener("beforeunload", () => {
 		if (typeof window.returnValue !== "undefined") {
 			if (window.opener && window.opener[returnValueContainerKey]) {
 				window.opener[returnValueContainerKey].returnValue = returnValue;
 			}
 		}
-		originalClose();
-	};
+	});
 	if (window.opener && window.opener[returnValueContainerKey]) {
 		window.dialogArguments = window.opener[returnValueContainerKey].dialogArguments;
 	}
