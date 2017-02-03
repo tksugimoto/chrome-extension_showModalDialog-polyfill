@@ -11,18 +11,18 @@
 })(() => {
 	// 共通
 	const newWindowName = "___new_window_%extension_id%";
-	const returnValueContainerKey = "___returnValueConnector_%extension_id%";
+	const showModalDialogDataMediatorKey = "___showModalDialogDataMediator_%extension_id%";
 
 	// ポップアップ
 	window.addEventListener("beforeunload", () => {
 		if (typeof window.returnValue !== "undefined") {
-			if (window.opener && window.opener[returnValueContainerKey]) {
-				window.opener[returnValueContainerKey].returnValue = returnValue;
+			if (window.opener && window.opener[showModalDialogDataMediatorKey]) {
+				window.opener[showModalDialogDataMediatorKey].returnValue = returnValue;
 			}
 		}
 	});
-	if (window.opener && window.opener[returnValueContainerKey]) {
-		window.dialogArguments = window.opener[returnValueContainerKey].dialogArguments;
+	if (window.opener && window.opener[showModalDialogDataMediatorKey]) {
+		window.dialogArguments = window.opener[showModalDialogDataMediatorKey].dialogArguments;
 	}
 
 	// メインページ
@@ -31,7 +31,7 @@
 		let triggerElement = null;
 		let latestReturnValue = null;
 		let latestDialogArguments = null;
-		window[returnValueContainerKey] = new Proxy({}, {
+		window[showModalDialogDataMediatorKey] = new Proxy({}, {
 			set: (obj, key, value) => {
 				if (key === "returnValue") {
 					latestReturnValue = value;
