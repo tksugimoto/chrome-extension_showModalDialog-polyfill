@@ -35,13 +35,12 @@
 		let latestDialogArguments = NO_DATA;
 		window[showModalDialogDataMediatorKey] = new Proxy({}, {
 			set: (obj, key, value) => {
-				if (key === "returnValue") {
+				if (key === "returnValue" && triggerElement) {
 					latestReturnValue = value;
 					const elem = triggerElement;
 					triggerElement = null;
-					if (elem) {
-						elem.click();
-					}
+					latestDialogArguments = NO_DATA;
+					elem.click();
 				}
 			},
 			get: (obj, key) => {
@@ -49,9 +48,7 @@
 					if (latestDialogArguments === NO_DATA) {
 						return undefined;
 					} else {
-						const dialogArguments = latestDialogArguments;
-						latestDialogArguments = NO_DATA;
-						return dialogArguments;
+						return latestDialogArguments;
 					}
 				}
 			}
