@@ -9,7 +9,7 @@
 * Chrome
 * Vivaldi
 * その他Chrome拡張を使えるブラウザ
-* Edge (※ 現在返り値 `returnValue` のみ受取可能)
+* Edge
 
 ## 使用可能条件
 * 特定の要素をクリックしたときにshowModalDialogが1回だけ呼ばれる

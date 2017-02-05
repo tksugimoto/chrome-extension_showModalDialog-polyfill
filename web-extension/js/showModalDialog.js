@@ -17,12 +17,12 @@
 	window.addEventListener("beforeunload", () => {
 		if (typeof window.returnValue !== "undefined") {
 			if (window.opener && window.opener[showModalDialogDataMediatorKey]) {
-				window.opener[showModalDialogDataMediatorKey].returnValue = returnValue;
+				window.opener[showModalDialogDataMediatorKey].setReturnValue(returnValue);
 			}
 		}
 	});
 	if (window.opener && window.opener[showModalDialogDataMediatorKey]) {
-		window.dialogArguments = window.opener[showModalDialogDataMediatorKey].dialogArguments;
+		window.dialogArguments = window.opener[showModalDialogDataMediatorKey].getDialogArguments();
 	}
 
 	// メインページ
@@ -33,9 +33,9 @@
 		let triggerElement = null;
 		let latestReturnValue = NO_DATA;
 		let latestDialogArguments = NO_DATA;
-		window[showModalDialogDataMediatorKey] = new Proxy({}, {
-			set: (obj, key, value) => {
-				if (key === "returnValue" && triggerElement) {
+		window[showModalDialogDataMediatorKey] = {
+			setReturnValue: (value) => {
+				if (triggerElement) {
 					latestReturnValue = value;
 					const elem = triggerElement;
 					triggerElement = null;
@@ -43,17 +43,14 @@
 					elem.click();
 				}
 			},
-			get: (obj, key) => {
-				if (key === "dialogArguments") {
-					// FIXME: Edgeの場合 window.opener経由でProxy#getできないのでdialogArgumentsを渡せない
-					if (latestDialogArguments === NO_DATA) {
-						return undefined;
-					} else {
-						return latestDialogArguments;
-					}
+			getDialogArguments: () => {
+				if (latestDialogArguments === NO_DATA) {
+					return undefined;
+				} else {
+					return latestDialogArguments;
 				}
 			}
-		});
+		};
 		window.showModalDialog = (url, dialogArguments, windowStyle = "") => {
 			if (latestReturnValue !== NO_DATA) {
 				const returnValue = latestReturnValue;
