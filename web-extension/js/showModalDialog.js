@@ -45,6 +45,7 @@
 			},
 			get: (obj, key) => {
 				if (key === "dialogArguments") {
+					// FIXME: Edgeの場合 window.opener経由でProxy#getできないのでdialogArgumentsを渡せない
 					if (latestDialogArguments === NO_DATA) {
 						return undefined;
 					} else {
