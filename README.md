@@ -1,4 +1,4 @@
-# 特定の条件を満たす場合にshowModalDialogを再現するChrome拡張
+# 特定の条件を満たす場合にshowModalDialogを再現するブラウザ拡張
 
 ## 対象
 ### システム
