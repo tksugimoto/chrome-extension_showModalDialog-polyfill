@@ -27,10 +27,12 @@
 
 	// メインページ
 	document.addEventListener("DOMContentLoaded", () => {
+		const NO_DATA = new class NoData{};
+		const undefined = void 0;
 		let latestClickedElement = null;
 		let triggerElement = null;
-		let latestReturnValue = null;
-		let latestDialogArguments = null;
+		let latestReturnValue = NO_DATA;
+		let latestDialogArguments = NO_DATA;
 		window[showModalDialogDataMediatorKey] = new Proxy({}, {
 			set: (obj, key, value) => {
 				if (key === "returnValue") {
@@ -44,23 +46,27 @@
 			},
 			get: (obj, key) => {
 				if (key === "dialogArguments") {
-					const dialogArguments = latestDialogArguments;
-					latestDialogArguments = null;
-					return dialogArguments;
+					if (latestDialogArguments === NO_DATA) {
+						return undefined;
+					} else {
+						const dialogArguments = latestDialogArguments;
+						latestDialogArguments = NO_DATA;
+						return dialogArguments;
+					}
 				}
 			}
 		});
 		window.showModalDialog = (url, dialogArguments, windowStyle = "") => {
-			if (latestReturnValue) {
+			if (latestReturnValue !== NO_DATA) {
 				const returnValue = latestReturnValue;
-				latestReturnValue = null;
+				latestReturnValue = NO_DATA;
 				return returnValue;
 			} else {
 				latestDialogArguments = dialogArguments;
 				triggerElement = latestClickedElement;
 				windowStyle = windowStyle.replace(/:/g, "=").replace(/;/g, ",").replace(/dialog/g, "");
 				window.open(url, newWindowName, windowStyle);
-				return null;
+				return undefined;
 			}
 		};
 		document.body.addEventListener("click", evt => {
